@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import api from "../../api/client";
 import { useAppSelector, useAppDispatch } from "../../store/hooks";
 import { fetchCart } from "../../store/slices/cartSlice";
-import { checkout } from "../../store/slices/cartSlice";
+import { checkout, clearCart } from "../../store/slices/cartSlice";
 import { fetchProducts } from "../../store/slices/productSlice";
 
 interface Address {
@@ -139,6 +139,7 @@ export default function AddressSelection() {
                 razorpay_signature: response.razorpay_signature,
                 address_id: selectedAddressId,
               });
+              dispatch(clearCart());
               toast.success("Order placed successfully!");
               navigate("/profile?tab=orders");
             } catch (error) {

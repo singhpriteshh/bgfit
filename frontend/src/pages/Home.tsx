@@ -150,7 +150,7 @@ const Home = () => {
             </Link>
           </div>
 
-          <ProductList />
+          <ProductList limit={3} />
 
           <div className="mt-12 text-center sm:hidden">
             <Link to="/shop" className="btn-primary">
