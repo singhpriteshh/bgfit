@@ -15,9 +15,9 @@ def read_products(
     query = select(Product)
     if category and category.lower() != "all":
         # Case-insensitive matching
-        query = query.where(Product.category.ilike(category))
+        query = query.where(Product.category.like(category))
     if type and type.lower() != "all":
-        query = query.where(Product.type.ilike(type))
+        query = query.where(Product.type.like(type))
     return session.exec(query).all()
 
 

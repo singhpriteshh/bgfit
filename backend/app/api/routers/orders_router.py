@@ -12,6 +12,7 @@ import hmac
 import hashlib
 from datetime import datetime
 from pydantic import BaseModel
+import uuid
 
 router = APIRouter()
 
@@ -57,10 +58,16 @@ async def verify_payment_and_create_order(
         selected_address = None
 
         # Check additional addresses first
-        addr_stmt = select(Address).where(
-            Address.id == request.address_id, Address.user_id == current_user.id
-        )
-        additional_addr = session.exec(addr_stmt).first()
+        # Check additional addresses first
+        try:
+            addr_uuid = uuid.UUID(request.address_id)
+            addr_stmt = select(Address).where(
+                Address.id == addr_uuid, Address.user_id == current_user.id
+            )
+            additional_addr = session.exec(addr_stmt).first()
+        except ValueError:
+            # address_id likely "primary" or invalid UUID string
+            additional_addr = None
 
         if additional_addr:
             selected_address = additional_addr
@@ -102,7 +109,11 @@ async def verify_payment_and_create_order(
         # Check if it's the primary address (using user_id as loose proxy or dedicated flag)
         # Actually, let's look at the UUID.
 
-        real_address = session.get(Address, request.address_id)
+        try:
+            addr_uuid_for_get = uuid.UUID(request.address_id)
+            real_address = session.get(Address, addr_uuid_for_get)
+        except ValueError:
+            real_address = None
         if real_address and real_address.user_id == current_user.id:
             final_shipping_address = real_address
         else:
@@ -200,8 +211,6 @@ async def verify_payment_and_create_order(
 
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
-
-
 
 
 @router.get("/", response_model=List[OrderRead])

@@ -1,20 +1,15 @@
 import uuid
 from typing import Optional
 from sqlmodel import Field, SQLModel, Relationship
-from sqlalchemy import Column, text, func
-from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 
 
 class User(SQLModel, table=True):
     id: Optional[uuid.UUID] = Field(
-        default=None,
-        sa_column=Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=text("uuid_generate_v4()"),
-            nullable=False,
-        ),
+        default_factory=uuid.uuid4,
+        primary_key=True,
+        index=True,
+        nullable=False,
     )
     email: str = Field(index=True, unique=True)
     hashed_password: str
@@ -32,13 +27,10 @@ class User(SQLModel, table=True):
 
 class Address(SQLModel, table=True):
     id: Optional[uuid.UUID] = Field(
-        default=None,
-        sa_column=Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=text("uuid_generate_v4()"),
-            nullable=False,
-        ),
+        default_factory=uuid.uuid4,
+        primary_key=True,
+        index=True,
+        nullable=False,
     )
     user_id: uuid.UUID = Field(foreign_key="user.id")
     full_name: str
@@ -56,13 +48,10 @@ class Address(SQLModel, table=True):
 
 class Product(SQLModel, table=True):
     id: Optional[uuid.UUID] = Field(
-        default=None,
-        sa_column=Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=text("uuid_generate_v4()"),
-            nullable=False,
-        ),
+        default_factory=uuid.uuid4,
+        primary_key=True,
+        index=True,
+        nullable=False,
     )
     name: str
     price: int  # Storing as int (cents/paise) or just raw value as per C#
@@ -76,13 +65,10 @@ class Product(SQLModel, table=True):
 
 class CartItem(SQLModel, table=True):
     id: Optional[uuid.UUID] = Field(
-        default=None,
-        sa_column=Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=text("uuid_generate_v4()"),
-            nullable=False,
-        ),
+        default_factory=uuid.uuid4,
+        primary_key=True,
+        index=True,
+        nullable=False,
     )
     user_id: uuid.UUID = Field(foreign_key="user.id")
     product_id: uuid.UUID = Field(foreign_key="product.id")
@@ -95,13 +81,10 @@ class CartItem(SQLModel, table=True):
 
 class Order(SQLModel, table=True):
     id: Optional[uuid.UUID] = Field(
-        default=None,
-        sa_column=Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=text("uuid_generate_v4()"),
-            nullable=False,
-        ),
+        default_factory=uuid.uuid4,
+        primary_key=True,
+        index=True,
+        nullable=False,
     )
     user_id: uuid.UUID = Field(foreign_key="user.id")
     total_amount: int
@@ -127,13 +110,10 @@ class Order(SQLModel, table=True):
 
 class OrderItem(SQLModel, table=True):
     id: Optional[uuid.UUID] = Field(
-        default=None,
-        sa_column=Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=text("uuid_generate_v4()"),
-            nullable=False,
-        ),
+        default_factory=uuid.uuid4,
+        primary_key=True,
+        index=True,
+        nullable=False,
     )
     order_id: uuid.UUID = Field(foreign_key="order.id")
     product_id: uuid.UUID = Field(foreign_key="product.id")
