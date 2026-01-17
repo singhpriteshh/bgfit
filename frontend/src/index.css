@@ -1,0 +1,49 @@
+/* Import Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Oswald", sans-serif;
+
+  --color-primary: #004d40;
+  --color-primary-dark: #00352c;
+  --color-secondary: #0f172a;
+  --color-accent: #f3f4f6;
+  --color-text-dark: #1f2937;
+  --color-text-light: #f9fafb;
+}
+
+html,
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-accent);
+  color: var(--color-text-dark);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-display {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-dark);
+}

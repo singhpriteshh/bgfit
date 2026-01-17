@@ -1,0 +1,48 @@
+# General
+.DS_Store
+Thumbs.db
+*~
+*.log
+
+# Git
+.git/
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+! .env.example
+
+# Python / Backend
+backend/__pycache__/
+backend/*.py[cod]
+backend/*$py.class
+backend/venv/
+backend/.venv/
+backend/env/
+backend/.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+backend/build/
+backend/dist/
+backend/*.spec
+backend/.mypy_cache/
+
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.output/
+frontend/coverage/
+frontend/.npm/
+frontend/.cache/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.pnpm-debug.log*
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
