@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import api from "../api/client";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { updateProfile, getCurrentUser } from "../store/slices/authSlice";
 import { toast } from "react-toastify";
@@ -13,6 +14,7 @@ import {
   MapPin,
   Globe,
   Package,
+  LayoutDashboard,
 } from "lucide-react";
 import OrdersList from "../features/orders/OrdersList";
 
@@ -103,6 +105,49 @@ const Profile = () => {
     }
   };
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleProfileImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const toastId = toast.loading("Uploading profile picture...");
+
+    try {
+      // 1. Upload to Cloudinary
+      const response = await api.post("/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const imageUrl = response.data.url;
+
+      // 2. Update User Profile
+      await dispatch(updateProfile({ profile_image_url: imageUrl })).unwrap();
+
+      toast.update(toastId, {
+        render: "Profile picture updated!",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
+      dispatch(getCurrentUser()); // Refresh user data to show new image
+    } catch (error) {
+      toast.update(toastId, {
+        render: "Upload failed",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
@@ -145,12 +190,30 @@ const Profile = () => {
               {/* Avatar Section */}
               <div className="shrink-0 flex flex-col items-center">
                 <div className="w-32 h-32 rounded-full border-2 border-primary bg-gray-50 flex items-center justify-center text-primary shadow-sm relative group overflow-hidden">
-                  <span className="text-5xl font-display font-bold uppercase">
-                    {user?.full_name?.charAt(0)}
-                  </span>
-                  <button className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                  {user?.profile_image_url ? (
+                    <img
+                      src={user.profile_image_url}
+                      alt={user.full_name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-5xl font-display font-bold uppercase">
+                      {user?.full_name?.charAt(0)}
+                    </span>
+                  )}
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                  >
                     <Camera className="w-8 h-8 text-white" />
                   </button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleProfileImageUpload}
+                  />
                 </div>
                 <p className="mt-4 text-xs font-bold uppercase tracking-widest text-gray-400">
                   Member since {new Date().getFullYear()}
@@ -192,6 +255,18 @@ const Profile = () => {
                         <Edit2 className="w-4 h-4" />
                         Edit Profile
                       </button>
+
+                      {user?.role === "admin" && (
+                        <button
+                          onClick={() =>
+                            (window.location.href = "/admin/dashboard")
+                          }
+                          className="inline-flex items-center px-6 py-3 border-2 border-indigo-600 text-sm font-bold uppercase tracking-widest text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors gap-2 ml-4"
+                        >
+                          <LayoutDashboard className="w-4 h-4" />
+                          Admin Dashboard
+                        </button>
+                      )}
                     </div>
                   </div>
                 ) : (

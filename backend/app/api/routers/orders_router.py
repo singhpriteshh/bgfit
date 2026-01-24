@@ -2,14 +2,16 @@ from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlmodel import Session, select
 from app.database import get_session
 from app.models import User, Address, Order, OrderItem, CartItem, Product
-from app.api.auth import get_current_user
-from app.schemas import OrderRead
+from app.api.routers.auth import get_current_user
+from app.api.routers.deps import get_current_admin_user
+from app.schemas import OrderRead, OrderUpdateStatus
 from sqlalchemy.orm import selectinload
 from typing import List
 import razorpay
 import os
 import hmac
 import hashlib
+import uuid
 from datetime import datetime
 from pydantic import BaseModel
 
@@ -202,8 +204,6 @@ async def verify_payment_and_create_order(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-
-
 @router.get("/", response_model=List[OrderRead])
 def get_user_orders(
     current_user: User = Depends(get_current_user),
@@ -218,3 +218,38 @@ def get_user_orders(
     orders = session.exec(statement).all()
 
     return orders
+
+
+@router.get("/all", response_model=List[OrderRead])
+def get_all_orders(
+    skip: int = 0,
+    limit: int = 100,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_admin_user),
+):
+    statement = (
+        select(Order)
+        .options(selectinload(Order.items).selectinload(OrderItem.product))
+        .order_by(Order.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+    )
+    return session.exec(statement).all()
+
+
+@router.put("/{order_id}/status", response_model=OrderRead)
+def update_order_status(
+    order_id: uuid.UUID,
+    status_update: OrderUpdateStatus,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_admin_user),
+):
+    order = session.get(Order, order_id)
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    order.status = status_update.status
+    session.add(order)
+    session.commit()
+    session.refresh(order)
+    return order

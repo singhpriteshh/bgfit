@@ -9,13 +9,19 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isLoading, error, token } = useAppSelector((state) => state.auth);
+  const { isLoading, error, token, user } = useAppSelector(
+    (state) => state.auth,
+  );
 
   useEffect(() => {
-    if (token) {
-      navigate("/");
+    if (token && user) {
+      if (user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
     }
-  }, [token, navigate]);
+  }, [token, user, navigate]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

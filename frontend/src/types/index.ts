@@ -9,6 +9,7 @@ export interface User {
   zip_code?: string;
   country?: string;
   profile_image_url?: string;
+  role: string;
 }
 
 export interface Product {

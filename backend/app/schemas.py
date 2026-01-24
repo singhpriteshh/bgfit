@@ -33,6 +33,7 @@ class UserCreate(UserBase):
 
 class UserRead(UserBase):
     id: uuid.UUID
+    role: str
 
 
 class UserUpdate(SQLModel):
@@ -107,3 +108,30 @@ class OrderRead(SQLModel):
     shipping_phone: str
 
     items: list[OrderItemRead]
+
+
+# Admin Schemas
+class ProductCreate(SQLModel):
+    name: str
+    price: int
+    image_url: str
+    back_image_url: Optional[str] = None
+    category: str
+    type: str
+    is_new_arrival: bool = False
+    color: str
+
+
+class ProductUpdate(SQLModel):
+    name: Optional[str] = None
+    price: Optional[int] = None
+    image_url: Optional[str] = None
+    back_image_url: Optional[str] = None
+    category: Optional[str] = None
+    type: Optional[str] = None
+    is_new_arrival: Optional[bool] = None
+    color: Optional[str] = None
+
+
+class OrderUpdateStatus(SQLModel):
+    status: str

@@ -26,6 +26,7 @@ class User(SQLModel, table=True):
     zip_code: Optional[str] = None
     country: Optional[str] = None
     profile_image_url: Optional[str] = None
+    role: str = Field(default="user")
 
     additional_addresses: list["Address"] = Relationship(back_populates="user")
 

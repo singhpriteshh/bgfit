@@ -1,6 +1,5 @@
 from fastapi import FastAPI
-from app.api import products, auth, cart, payment
-from app.api.routers import address_router, orders_router
+from app.api.routers import address_router, orders_router, products, auth, cart, payment, upload
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -27,6 +26,7 @@ app.include_router(cart.router, prefix="/api/cart", tags=["Cart"])
 app.include_router(payment.router, prefix="/api/payment", tags=["Payment"])
 app.include_router(address_router.router, prefix="/api", tags=["Address"])
 app.include_router(orders_router.router, prefix="/api/orders", tags=["Orders"])
+app.include_router(upload.router, prefix="/api", tags=["Upload"])
 
 
 @app.get("/")

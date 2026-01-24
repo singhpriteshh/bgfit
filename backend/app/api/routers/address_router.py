@@ -5,7 +5,7 @@ import uuid
 
 from app.database import get_session
 from app.models import User, Address
-from app.api.cart import get_current_user
+from app.api.routers.cart import get_current_user
 from app.schemas import UserRead
 
 router = APIRouter()
