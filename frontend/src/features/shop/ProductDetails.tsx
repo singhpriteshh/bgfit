@@ -146,7 +146,7 @@ const ProductDetails = () => {
                 </h3>
                 <button
                   onClick={() => setShowSizeChart(true)}
-                  className="text-xs text-gray-500 underline flex items-center gap-1 hover:text-primary"
+                  className="cursor-pointer text-xs text-gray-500 underline flex items-center gap-1 hover:text-primary"
                 >
                   <Ruler className="w-3 h-3" /> Size Guide
                 </button>

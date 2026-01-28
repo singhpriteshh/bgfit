@@ -20,27 +20,36 @@ export interface ProductFilters {
   category?: string;
   type?: string;
   sort?: string;
+  min_price?: number;
+  max_price?: number;
+  color?: string;
 }
 
 export const fetchProducts = createAsyncThunk(
   "products/fetchAll",
   async (filters: ProductFilters = {}, { rejectWithValue }) => {
     try {
-      const { category, type } = filters;
+      const { category, type, sort, min_price, max_price, color } = filters;
       const params = new URLSearchParams();
       if (category) params.append("category", category);
       if (type) params.append("type", type);
+      if (sort) params.append("sort", sort);
+      if (min_price !== undefined)
+        params.append("min_price", min_price.toString());
+      if (max_price !== undefined)
+        params.append("max_price", max_price.toString());
+      if (color) params.append("color", color);
 
       const response = await api.get<Product[]>(
-        `/products?${params.toString()}`
+        `/products?${params.toString()}`,
       );
       return response.data;
     } catch (err: any) {
       return rejectWithValue(
-        err.response?.data?.detail || "Failed to fetch products"
+        err.response?.data?.detail || "Failed to fetch products",
       );
     }
-  }
+  },
 );
 
 export const fetchProductById = createAsyncThunk(
@@ -51,10 +60,10 @@ export const fetchProductById = createAsyncThunk(
       return response.data;
     } catch (err: any) {
       return rejectWithValue(
-        err.response?.data?.detail || "Failed to fetch product"
+        err.response?.data?.detail || "Failed to fetch product",
       );
     }
-  }
+  },
 );
 
 const productSlice = createSlice({

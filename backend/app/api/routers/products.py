@@ -13,7 +13,13 @@ router = APIRouter()
 
 @router.get("", response_model=List[Product])
 def read_products(
-    category: str = None, type: str = None, session: Session = Depends(get_session)
+    category: str = None,
+    type: str = None,
+    min_price: int = None,
+    max_price: int = None,
+    color: str = None,
+    sort: str = None,
+    session: Session = Depends(get_session),
 ):
     query = select(Product)
     if category and category.lower() != "all":
@@ -21,6 +27,24 @@ def read_products(
         query = query.where(Product.category.ilike(category))
     if type and type.lower() != "all":
         query = query.where(Product.type.ilike(type))
+    
+    # New filters
+    if min_price is not None:
+        query = query.where(Product.price >= min_price)
+    if max_price is not None:
+        query = query.where(Product.price <= max_price)
+    if color and color.lower() != "all":
+        query = query.where(Product.color.ilike(color))
+        
+    # Sorting
+    if sort:
+        if sort == "price_asc":
+            query = query.order_by(Product.price.asc())
+        elif sort == "price_desc":
+            query = query.order_by(Product.price.desc())
+        elif sort == "newest":
+            query = query.order_by(Product.is_new_arrival.desc())
+            
     return session.exec(query).all()
 
 

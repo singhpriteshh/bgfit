@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import {
   Facebook,
   Instagram,
@@ -6,9 +7,12 @@ import {
   Mail,
   MapPin,
   Phone,
+  X,
 } from "lucide-react";
 
 const Footer = () => {
+  const [showSizeChart, setShowSizeChart] = useState(false);
+
   return (
     <footer className="bg-secondary text-white pt-16 pb-8 font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -29,7 +33,7 @@ const Footer = () => {
               </div>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Redefining athletic wear with premium fabrics and modern cuts.
+              Redefining casual wear with premium fabrics and modern cuts.
               Join the movement.
             </p>
             <div className="pt-4">
@@ -129,20 +133,12 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/size-guide"
-                  className="hover:text-white transition-colors"
+                <button
+                  onClick={() => setShowSizeChart(true)}
+                  className="hover:text-white transition-colors text-left"
                 >
                   Size Guide
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/track-order"
-                  className="hover:text-white transition-colors"
-                >
-                  Track Order
-                </Link>
+                </button>
               </li>
             </ul>
           </div>
@@ -207,6 +203,33 @@ const Footer = () => {
           </div>
         </div>
       </div>
+
+      {/* Size Chart Modal */}
+      {showSizeChart && (
+        <div
+          onClick={() => setShowSizeChart(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-auto shadow-2xl animate-in fade-in zoom-in duration-200"
+          >
+            <button
+              onClick={() => setShowSizeChart(false)}
+              className="absolute top-4 right-4 p-2 bg-white/80 rounded-full hover:bg-gray-100 transition-colors z-10"
+            >
+              <X className="w-6 h-6 text-gray-900" />
+            </button>
+            <div className="p-2">
+              <img
+                src="/images/sizechart.png"
+                alt="Size Chart"
+                className="w-full h-auto rounded"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </footer>
   );
 };
