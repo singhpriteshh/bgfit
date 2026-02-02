@@ -7,6 +7,7 @@ from app.api.routers import (
     cart,
     payment,
     upload,
+    settings_router,
 )
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -36,6 +37,7 @@ app.include_router(payment.router, prefix="/api/payment", tags=["Payment"])
 app.include_router(address_router.router, prefix="/api", tags=["Address"])
 app.include_router(orders_router.router, prefix="/api/orders", tags=["Orders"])
 app.include_router(upload.router, prefix="/api", tags=["Upload"])
+app.include_router(settings_router.router, prefix="/api", tags=["Settings"])
 
 
 @app.get("/")

@@ -8,6 +8,7 @@ import {
   Home,
   Menu,
   X,
+  Settings,
 } from "lucide-react";
 import { useAppDispatch } from "../store/hooks";
 import { logout } from "../store/slices/authSlice";
@@ -98,6 +99,17 @@ const AdminLayout = () => {
           >
             <ShoppingBag className="h-5 w-5" />
             <span className="font-medium">Orders</span>
+          </Link>
+
+          <Link
+            to="/admin/settings"
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${isActive(
+              "/admin/settings",
+            )}`}
+            onClick={closeSidebar}
+          >
+            <Settings className="h-5 w-5" />
+            <span className="font-medium">Site Settings</span>
           </Link>
         </nav>
 

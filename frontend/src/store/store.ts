@@ -3,12 +3,14 @@ import authReducer from "./slices/authSlice.ts";
 import productReducer from "./slices/productSlice.ts";
 import cartReducer from "./slices/cartSlice.ts";
 import orderReducer from "./slices/orderSlice.ts";
+import shopReducer from "./slices/shopSlice.ts";
 
 const rootReducer = combineReducers({
   auth: authReducer,
   products: productReducer,
   cart: cartReducer,
   orders: orderReducer,
+  shop: shopReducer,
 });
 
 export const store = configureStore({

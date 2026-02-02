@@ -145,3 +145,15 @@ class OrderItem(SQLModel, table=True):
 
     order: Optional[Order] = Relationship(back_populates="items")
     product: Optional[Product] = Relationship()
+
+
+class SiteSettings(SQLModel, table=True):
+    id: int = Field(default=1, primary_key=True)
+    price_range_min: int = 0
+    price_range_max: int = 50000
+    price_range_step: int = 1000
+    sorting_options: str = (
+        '[{"label": "Newest Arrivals", "value": "newest"}, '
+        '{"label": "Price: Low to High", "value": "price_asc"}, '
+        '{"label": "Price: High to Low", "value": "price_desc"}]'
+    )  # Storing JSON as string for simplicity in SQLite/Postgres compatibility without extra types

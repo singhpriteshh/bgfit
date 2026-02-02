@@ -22,6 +22,7 @@ import AdminRoute from "./components/AdminRoute";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProductManagement from "./pages/admin/ProductManagement";
 import OrderManagement from "./pages/admin/OrderManagement";
+import SiteSettings from "./pages/admin/SiteSettings";
 
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
@@ -81,6 +82,7 @@ function App() {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="products" element={<ProductManagement />} />
             <Route path="orders" element={<OrderManagement />} />
+            <Route path="settings" element={<SiteSettings />} />
             {/* Redirect /admin to /admin/dashboard */}
             <Route index element={<Navigate to="dashboard" replace />} />
           </Route>

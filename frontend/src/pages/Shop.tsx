@@ -3,11 +3,20 @@ import { useSearchParams } from "react-router-dom";
 import ProductList from "../features/shop/ProductList";
 import api from "../api/client";
 import type { Product } from "../types";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { fetchSettings } from "../store/slices/shopSlice";
 
 const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const gender = searchParams.get("gender") || undefined;
   const type = searchParams.get("type") || undefined;
+
+  const dispatch = useAppDispatch();
+  const { settings } = useAppSelector((state) => state.shop);
+
+  useEffect(() => {
+    dispatch(fetchSettings());
+  }, [dispatch]);
 
   // Local state for filters
   const [minPrice, setMinPrice] = useState<number | "">("");
@@ -66,22 +75,32 @@ const Shop = () => {
   const priceRanges = useMemo(() => {
     if (allProducts.length === 0) return [];
     const prices = allProducts.map((p) => p.price);
-    const min = Math.min(...prices);
-    const max = Math.max(...prices);
-    const step = Math.ceil((max - min) / 5);
+    const min = settings?.price_range_min ?? 0;
+    const max = settings?.price_range_max ?? Math.max(...prices);
+    const step = settings?.price_range_step ?? Math.ceil((max - min) / 5);
 
     const ranges = [];
-    for (let i = 0; i < 5; i++) {
-      const start = min + i * step;
-      const end = i === 4 ? max : start + step - 1;
+    // Assuming we want roughly 5 ranges or based on step
+    // If step is user defined, we can just iterate from min to max
+
+    // Safety check to prevent infinite loop
+    if (step <= 0) return [];
+
+    let current = min;
+    while (current < max) {
+      const end = Math.min(current + step, max);
       ranges.push({
-        label: `Rs. ${Math.floor(start)} - Rs. ${Math.floor(end)}`,
-        min: Math.floor(start),
-        max: Math.floor(end),
+        label: `Rs. ${current} - Rs. ${end}`,
+        min: current,
+        max: end,
       });
+      current += step;
+      // Limit to reasonable number of ranges if step is too small
+      if (ranges.length > 20) break;
     }
+
     return ranges;
-  }, [allProducts]);
+  }, [allProducts, settings]);
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -95,7 +114,7 @@ const Shop = () => {
             <h1 className="text-2xl font-bold uppercase tracking-wide text-gray-800">
               {getTitle()}{" "}
               <span className="text-gray-400 text-lg font-normal mx-2">
-                - 1478 items
+                - {allProducts.length} items
               </span>
             </h1>
           </div>
@@ -106,9 +125,17 @@ const Shop = () => {
               onChange={(e) => setSort(e.target.value)}
               className="w-64 p-2  border border-gray-300 text-sm focus:outline-none focus:border-gray-500 rounded-sm"
             >
-              <option value="newest">Sort by: Newest Arrivals</option>
-              <option value="price_asc">Sort by: Price Low to High</option>
-              <option value="price_desc">Sort by: Price High to Low</option>
+              {settings?.sorting_options?.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              )) || (
+                <>
+                  <option value="newest">Sort by: Newest Arrivals</option>
+                  <option value="price_asc">Sort by: Price Low to High</option>
+                  <option value="price_desc">Sort by: Price High to Low</option>
+                </>
+              )}
             </select>
             <button
               className="md:hidden p-2 border border-gray-300 rounded-sm ml-2 "
