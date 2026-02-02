@@ -70,7 +70,7 @@ const Contact = () => {
                   <p className="text-gray-900 font-bold uppercase tracking-wide text-sm">
                     Phone
                   </p>
-                  <p className="text-gray-500 mt-1">+91 98765 43210</p>
+                  <p className="text-gray-500 mt-1">+91 9558430125</p>
                   <p className="text-xs text-gray-400 mt-1">Mon-Fri 9am-6pm</p>
                 </div>
               </div>
@@ -99,9 +99,9 @@ const Contact = () => {
                     Headquarters
                   </p>
                   <p className="text-gray-500 mt-1">
-                    123 Fitness Ave,
+                    TB Road, Mahesana - 384002
                     <br />
-                    Mumbai, Maharashtra 400001
+                    Gujarat
                   </p>
                 </div>
               </div>

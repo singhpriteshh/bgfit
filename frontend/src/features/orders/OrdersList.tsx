@@ -120,6 +120,7 @@ export default function OrdersList() {
                         <img
                           src={item.product.image_url}
                           alt={item.product.name}
+                          loading="lazy"
                           className="h-full w-full object-cover"
                         />
                       ) : (

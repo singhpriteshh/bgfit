@@ -103,6 +103,7 @@ const Cart = () => {
                       <img
                         src={product.image_url}
                         alt={product.name}
+                        loading="lazy"
                         className="h-full w-full object-cover object-center"
                       />
                     ) : (

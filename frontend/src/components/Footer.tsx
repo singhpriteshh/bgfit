@@ -26,6 +26,7 @@ const Footer = () => {
               <img
                 src="/images/logo.png"
                 alt="BGFIT Logo"
+                loading="lazy"
                 className="h-8 w-auto invert mix-blend-screen"
               />
               <div>
@@ -33,8 +34,8 @@ const Footer = () => {
               </div>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Redefining casual wear with premium fabrics and modern cuts.
-              Join the movement.
+              Redefining casual wear with premium fabrics and modern cuts. Join
+              the movement.
             </p>
             <div className="pt-4">
               <h4 className="font-display text-lg uppercase mb-4 tracking-wide">
@@ -152,14 +153,14 @@ const Footer = () => {
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-primary shrink-0" />
                 <span>
-                  123 Fitness Ave,
+                  TB Road, Mahesana - 384002
                   <br />
-                  Mumbai, Maharashtra 400001
+                  Gujarat
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-primary shrink-0" />
-                <span>+91 98765 43210</span>
+                <span>+91 9558430125</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-primary shrink-0" />
@@ -224,6 +225,7 @@ const Footer = () => {
               <img
                 src="/images/sizechart.png"
                 alt="Size Chart"
+                loading="lazy"
                 className="w-full h-auto rounded"
               />
             </div>

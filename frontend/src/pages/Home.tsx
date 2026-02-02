@@ -76,6 +76,7 @@ const Home = () => {
             <img
               src="https://images.unsplash.com/photo-1558954066-620ba460bae2?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0"
               alt="Men's Collection"
+              loading="lazy"
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
             <div className="absolute bottom-8 left-8 z-20">
@@ -97,6 +98,7 @@ const Home = () => {
             <img
               src="https://images.unsplash.com/photo-1681400150465-9845b135f018?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0"
               alt="Women's Collection"
+              loading="lazy"
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
             <div className="absolute bottom-8 left-8 z-20">
@@ -118,6 +120,7 @@ const Home = () => {
             <img
               src="https://images.unsplash.com/photo-1696086152513-c74dc1d4b135?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0"
               alt="Unisex Collection"
+              loading="lazy"
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
             <div className="absolute bottom-8 left-8 z-20">

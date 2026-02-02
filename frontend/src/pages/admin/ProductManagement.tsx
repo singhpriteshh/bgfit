@@ -161,7 +161,7 @@ const ProductManagement = () => {
         </button>
       </div>
 
-      <div className="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-white shadow-sm rounded-lg border border-gray-200 overflow-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -192,6 +192,7 @@ const ProductManagement = () => {
                         className="h-10 w-10 rounded-md object-cover"
                         src={product.image_url}
                         alt=""
+                        loading="lazy"
                       />
                     </div>
                     <div className="ml-4">
@@ -365,6 +366,7 @@ const ProductManagement = () => {
                     <img
                       src={formData.image_url}
                       alt="Preview"
+                      loading="lazy"
                       className="h-10 w-10 object-cover rounded"
                     />
                   )}
@@ -386,6 +388,7 @@ const ProductManagement = () => {
                     <img
                       src={formData.back_image_url}
                       alt="Preview"
+                      loading="lazy"
                       className="h-10 w-10 object-cover rounded"
                     />
                   )}

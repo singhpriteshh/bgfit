@@ -22,7 +22,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         quantity: 1,
         size: "M",
         color: product.color,
-      })
+      }),
     )
       .unwrap()
       .then(() => {
@@ -45,6 +45,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <img
             src={product.image_url}
             alt={product.name}
+            loading="lazy"
             className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-500 ${
               isHovered && product.back_image_url ? "opacity-0" : "opacity-100"
             }`}
@@ -54,6 +55,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <img
               src={product.back_image_url}
               alt={`${product.name} back`}
+              loading="lazy"
               className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-500 ${
                 isHovered ? "opacity-100" : "opacity-0"
               }`}

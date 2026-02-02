@@ -50,6 +50,7 @@ const About = () => {
                   className="w-full h-full object-cover"
                   src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
                   alt="Training"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-primary/20 mix-blend-overlay"></div>
               </div>

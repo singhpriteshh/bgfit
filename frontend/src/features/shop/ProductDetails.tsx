@@ -74,11 +74,13 @@ const ProductDetails = () => {
             <img
               src={product.back_image_url || product.image_url}
               alt={product.name}
+              loading="lazy"
               className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0 group-hover:opacity-100"
             />
             <img
               src={product.image_url}
               alt={product.name}
+              loading="lazy"
               className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0"
             />
 
@@ -220,6 +222,7 @@ const ProductDetails = () => {
               <img
                 src="/images/sizechart.png"
                 alt="Size Chart"
+                loading="lazy"
                 className="w-full h-auto rounded"
               />
             </div>
