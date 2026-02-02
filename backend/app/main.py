@@ -1,5 +1,13 @@
 from fastapi import FastAPI
-from app.api.routers import address_router, orders_router, products, auth, cart, payment, upload
+from app.api.routers import (
+    address_router,
+    orders_router,
+    products,
+    auth,
+    cart,
+    payment,
+    upload,
+)
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -10,6 +18,7 @@ origins = [
     "http://localhost:5173",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:5173",
+    "http://15.206.207.170:3000",
 ]
 
 app.add_middleware(
