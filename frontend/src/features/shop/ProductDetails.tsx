@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShoppingCart, ArrowLeft, Heart, Share2, Ruler, X } from "lucide-react";
+import { ShoppingCart, ArrowLeft, Ruler, X } from "lucide-react";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchProductById } from "../../store/slices/productSlice";
@@ -110,14 +110,6 @@ const ProductDetails = () => {
           </h1>
           <div className="flex items-center justify-between mb-8 pb-8 border-b border-gray-100">
             <p className="text-3xl font-bold text-gray-900">₹{product.price}</p>
-            <div className="flex items-center gap-4 text-gray-400">
-              <button className="hover:text-primary transition-colors">
-                <Share2 className="w-5 h-5" />
-              </button>
-              <button className="hover:text-red-500 transition-colors">
-                <Heart className="w-5 h-5" />
-              </button>
-            </div>
           </div>
 
           <div className="space-y-8">
@@ -126,18 +118,6 @@ const ProductDetails = () => {
               <h3 className="text-sm font-medium text-gray-900 uppercase tracking-wide mb-3">
                 Color: <span className="text-gray-500">{product.color}</span>
               </h3>
-              <div className="flex gap-3">
-                <button
-                  className={`w-10 h-10 rounded-full border-2 ${
-                    product.color === "Black"
-                      ? "bg-black border-primary"
-                      : "bg-gray-200 border-transparent hover:border-gray-300"
-                  }`}
-                ></button>
-                {/* Fake other colors for demo visual */}
-                <button className="w-10 h-10 rounded-full bg-blue-900 border-2 border-transparent hover:border-gray-300"></button>
-                <button className="w-10 h-10 rounded-full bg-red-800 border-2 border-transparent hover:border-gray-300"></button>
-              </div>
             </div>
 
             {/* Size */}
