@@ -73,6 +73,8 @@ class Product(SQLModel, table=True):
     type: str  # Tee, Hoodie, etc.
     is_new_arrival: bool = False
     color: str
+    stock: int = Field(default=0)
+    product_description: Optional[str] = Field(default=None)
 
 
 class CartItem(SQLModel, table=True):

@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import api from "../../api/client";
 import type { Order } from "../../types";
 import { toast } from "react-toastify";
+import { Eye, X } from "lucide-react";
 
 const OrderManagement = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   const fetchOrders = async () => {
     try {
@@ -124,25 +126,196 @@ const OrderManagement = () => {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <select
-                    value={order.status}
-                    onChange={(e) =>
-                      handleStatusUpdate(order.id, e.target.value)
-                    }
-                    className="mt-1 block w-full py-1 px-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs"
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="paid">Paid</option>
-                    <option value="shipped">Shipped</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
+                  <div className="flex items-center space-x-3">
+                    <select
+                      value={order.status}
+                      onChange={(e) =>
+                        handleStatusUpdate(order.id, e.target.value)
+                      }
+                      className="py-1.5 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs"
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="paid">Paid</option>
+                      <option value="shipped">Shipped</option>
+                      <option value="delivered">Delivered</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                    <button
+                      onClick={() => setSelectedOrder(order)}
+                      className="p-1.5 hover:bg-gray-100 rounded-full transition-colors group relative"
+                      title="View Details"
+                    >
+                      <Eye className="w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {/* Order Details Modal */}
+      {selectedOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-gray-50">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">
+                  Order Details #{selectedOrder.id.slice(0, 8)}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Placed on{" "}
+                  {new Date(selectedOrder.created_at).toLocaleString()}
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedOrder(null)}
+                className="text-gray-400 hover:text-gray-600 bg-white p-1 rounded-full shadow-sm"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto flex-1 bg-white">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Left Column: Summary & Address */}
+                <div className="space-y-8">
+                  <section>
+                    <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
+                      Customer & Shipping Details
+                    </h4>
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 text-sm space-y-2">
+                      <p>
+                        <span className="font-semibold text-gray-900">
+                          Name:
+                        </span>{" "}
+                        {selectedOrder.shipping_full_name}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-gray-900">
+                          Phone:
+                        </span>{" "}
+                        {selectedOrder.shipping_phone}
+                      </p>
+                      <div>
+                        <span className="font-semibold text-gray-900 block mb-1">
+                          Address:
+                        </span>
+                        <p className="text-gray-600">
+                          {selectedOrder.shipping_address_line1}
+                          {selectedOrder.shipping_address_line2 && (
+                            <>
+                              <br />
+                              {selectedOrder.shipping_address_line2}
+                            </>
+                          )}
+                          <br />
+                          {selectedOrder.shipping_city},{" "}
+                          {selectedOrder.shipping_state}{" "}
+                          {selectedOrder.shipping_zip_code}
+                          <br />
+                          {selectedOrder.shipping_country}
+                        </p>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section>
+                    <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
+                      Payment & Status
+                    </h4>
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 text-sm space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="font-semibold text-gray-900">
+                          Total Amount:
+                        </span>
+                        <span className="text-lg font-bold">
+                          ₹{selectedOrder.total_amount}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="font-semibold text-gray-900">
+                          Current Status:
+                        </span>
+                        <span
+                          className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
+                            selectedOrder.status,
+                          )}`}
+                        >
+                          {selectedOrder.status.toUpperCase()}
+                        </span>
+                      </div>
+                      {/* Placeholder for Razorpay ID if it comes back from the API */}
+                      <div className="pt-2 border-t border-gray-200 mt-2">
+                        <p className="text-xs text-gray-500">
+                          Payment Reference / Razorpay ID will appear here if
+                          required.
+                        </p>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+
+                {/* Right Column: Order Items */}
+                <div>
+                  <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
+                    Order Items ({selectedOrder.items?.length || 0})
+                  </h4>
+                  <div className="space-y-4">
+                    {selectedOrder.items?.map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex gap-4 p-4 border border-gray-100 rounded-lg bg-white shadow-sm"
+                      >
+                        <div className="w-20 h-24 shrink-0 bg-gray-100 rounded-md overflow-hidden">
+                          {item.product?.image_url ? (
+                            <img
+                              src={item.product.image_url}
+                              alt={item.product.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs text-center font-medium">
+                              No Image
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 flex flex-col justify-between">
+                          <div>
+                            <h5 className="font-medium text-gray-900 line-clamp-2 leading-snug">
+                              {item.product?.name || "Unknown Product"}
+                            </h5>
+                            <p className="text-xs text-gray-500 mt-1 capitalize">
+                              {item.color} | Size: {item.size}
+                            </p>
+                          </div>
+                          <div className="flex justify-between items-end mt-2">
+                            <span className="text-sm font-semibold text-gray-900">
+                              ₹{item.price}
+                            </span>
+                            <span className="text-xs font-medium bg-gray-100 px-2 py-1 rounded text-gray-600">
+                              Qty: {item.quantity}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {(!selectedOrder.items ||
+                      selectedOrder.items.length === 0) && (
+                      <p className="text-sm text-gray-500 text-center py-8">
+                        No items found for this order.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -40,7 +40,6 @@ def update_settings(
     settings.price_range_min = settings_update.price_range_min
     settings.price_range_max = settings_update.price_range_max
     settings.price_range_step = settings_update.price_range_step
-    settings.sorting_options = settings_update.sorting_options
 
     session.add(settings)
     session.commit()

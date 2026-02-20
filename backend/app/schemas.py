@@ -59,6 +59,8 @@ class ProductRead(SQLModel):
     type: str
     is_new_arrival: bool
     color: str
+    stock: int
+    product_description: Optional[str] = None
 
 
 # Cart Schemas
@@ -120,6 +122,8 @@ class ProductCreate(SQLModel):
     type: str
     is_new_arrival: bool = False
     color: str
+    stock: int = 0
+    product_description: Optional[str] = None
 
 
 class ProductUpdate(SQLModel):
@@ -131,6 +135,8 @@ class ProductUpdate(SQLModel):
     type: Optional[str] = None
     is_new_arrival: Optional[bool] = None
     color: Optional[str] = None
+    stock: Optional[int] = None
+    product_description: Optional[str] = None
 
 
 class OrderUpdateStatus(SQLModel):

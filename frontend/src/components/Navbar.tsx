@@ -207,15 +207,24 @@ const Navbar = () => {
                 Login / Register
               </Link>
             ) : (
-              <button
-                onClick={() => {
-                  handleLogout();
-                  setIsOpen(false);
-                }}
-                className="block w-full text-left px-3 py-3 rounded-md text-base font-medium text-red-600 hover:bg-gray-50"
-              >
-                Logout
-              </button>
+              <>
+                <Link
+                  to="/profile"
+                  className="block w-full text-left px-3 py-3 rounded-md text-base font-medium text-gray-600 hover:bg-gray-50"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Profile
+                </Link>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsOpen(false);
+                  }}
+                  className="block w-full text-left px-3 py-3 rounded-md text-base font-medium text-red-600 hover:bg-gray-50"
+                >
+                  Logout
+                </button>
+              </>
             )}
           </div>
         </div>

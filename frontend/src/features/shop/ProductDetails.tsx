@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ShoppingCart, ArrowLeft, Ruler, X } from "lucide-react";
 import { toast } from "react-toastify";
@@ -18,6 +18,10 @@ const ProductDetails = () => {
 
   const [selectedSize, setSelectedSize] = useState("M");
   const [showSizeChart, setShowSizeChart] = useState(false);
+
+  // Gallery slider state for mobile
+  const [activeIndex, setActiveIndex] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (id) {
@@ -44,6 +48,14 @@ const ProductDetails = () => {
       .catch((err) => toast.error("Failed to add to cart: " + err));
   };
 
+  const handleScroll = () => {
+    if (!scrollContainerRef.current) return;
+    const { scrollLeft, clientWidth } = scrollContainerRef.current;
+    // Calculate which image is currently mostly visible
+    const index = Math.round(scrollLeft / clientWidth);
+    setActiveIndex(index);
+  };
+
   if (isLoading)
     return (
       <div className="min-h-[60vh] flex items-center justify-center font-display text-xl tracking-wide">
@@ -68,31 +80,65 @@ const ProductDetails = () => {
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-        {/* Product Image Gallery (Simple for now) */}
+        {/* Product Image Gallery */}
         <div className="space-y-4">
-          <div className="aspect-4/5 w-full bg-gray-100 rounded-lg overflow-hidden relative shadow-md group">
-            <img
-              src={product.back_image_url || product.image_url}
-              alt={product.name}
-              loading="lazy"
-              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0 group-hover:opacity-100"
-            />
-            <img
-              src={product.image_url}
-              alt={product.name}
-              loading="lazy"
-              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0"
-            />
+          <div className="relative group">
+            {/* Mobile Scroll Container / Desktop Container */}
+            <div
+              ref={scrollContainerRef}
+              onScroll={handleScroll}
+              className="aspect-4/5 w-full bg-gray-100 rounded-lg overflow-x-auto md:overflow-hidden relative shadow-md flex md:block snap-x snap-mandatory hide-scrollbar"
+            >
+              <div className="w-full shrink-0 snap-center md:absolute md:inset-0">
+                <img
+                  src={product.image_url}
+                  alt={product.name}
+                  loading="lazy"
+                  className={`w-full h-full object-cover transition-opacity duration-500 md:opacity-100 ${
+                    product.back_image_url ? "md:group-hover:opacity-0" : ""
+                  }`}
+                />
+              </div>
 
-            {/* Badges */}
-            <div className="absolute top-4 left-4 flex flex-col gap-2">
-              {product.is_new_arrival && (
-                <span className="bg-white/90 backdrop-blur text-black text-xs font-bold px-3 py-1 uppercase tracking-widest">
-                  New Drop
-                </span>
+              {product.back_image_url && (
+                <div className="w-full shrink-0 snap-center md:absolute md:inset-0">
+                  <img
+                    src={product.back_image_url}
+                    alt={`${product.name} back`}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-opacity duration-500 opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                  />
+                </div>
               )}
+
+              {/* Badges */}
+              <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
+                {product.is_new_arrival && (
+                  <span className="bg-white/90 backdrop-blur text-black text-xs font-bold px-3 py-1 uppercase tracking-widest">
+                    New Drop
+                  </span>
+                )}
+                {product.stock === 0 && (
+                  <span className="bg-red-500/90 backdrop-blur text-white text-xs font-bold px-3 py-1 uppercase tracking-widest">
+                    Out of Stock
+                  </span>
+                )}
+              </div>
             </div>
+
+            {/* Mobile Slider Dots */}
+            {product.back_image_url && (
+              <div className="flex md:hidden justify-center items-center gap-1.5 mt-4">
+                <div
+                  className={`h-1.5 rounded-full transition-all duration-300 ${activeIndex === 0 ? "w-4 bg-primary" : "w-1.5 bg-gray-300"}`}
+                />
+                <div
+                  className={`h-1.5 rounded-full transition-all duration-300 ${activeIndex === 1 ? "w-4 bg-primary" : "w-1.5 bg-gray-300"}`}
+                />
+              </div>
+            )}
           </div>
+
           <div className="grid grid-cols-2 gap-4">
             {/* secondary images placeholder if we had them */}
           </div>
@@ -152,28 +198,35 @@ const ProductDetails = () => {
 
             {/* Description */}
             <div className="prose prose-sm text-gray-500">
-              <p>
-                Engineered for peak performance, the {product.name} blends
-                advanced moisture-wicking technology with a sleek, modern
-                silhouette. Designed to move with you, whether you're crushing a
-                PR or hitting the streets.
+              <p className="whitespace-pre-line">
+                {product.product_description ||
+                  `Engineered for peak performance, the ${product.name} blends advanced moisture-wicking technology with a sleek, modern silhouette. Designed to move with you, whether you're crushing a PR or hitting the streets.`}
               </p>
-              <ul className="list-disc pl-5 space-y-1 mt-4">
-                <li>Premium moisture-wicking fabric</li>
-                <li>Athletic fit for maximum mobility</li>
-                <li>Reinforced stitching for durability</li>
-                <li>Designed in Mumbai</li>
-              </ul>
+              {!product.product_description && (
+                <ul className="list-disc pl-5 space-y-1 mt-4">
+                  <li>Premium moisture-wicking fabric</li>
+                  <li>Athletic fit for maximum mobility</li>
+                  <li>Reinforced stitching for durability</li>
+                  <li>Designed in Gujarat</li>
+                </ul>
+              )}
             </div>
 
             {/* Actions */}
             <div className="pt-8">
               <button
                 onClick={handleAddToCart}
-                className="w-full bg-secondary text-white py-4 px-8 font-display font-bold text-lg uppercase tracking-wider hover:bg-black transition-colors flex items-center justify-center gap-3 group cursor-pointer"
+                disabled={product.stock === 0}
+                className={`w-full py-4 px-8 font-display font-bold text-lg uppercase tracking-wider flex items-center justify-center gap-3 group transition-colors ${
+                  product.stock === 0
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-secondary text-white hover:bg-black cursor-pointer"
+                }`}
               >
                 <ShoppingCart className="h-5 w-5" />
-                <span>Add to Cart</span>
+                <span>
+                  {product.stock === 0 ? "Out of Stock" : "Add to Cart"}
+                </span>
               </button>
               <p className="text-center text-xs text-gray-400 mt-4 uppercase tracking-widest">
                 Free Shipping on orders above ₹999

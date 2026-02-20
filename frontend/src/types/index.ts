@@ -22,6 +22,8 @@ export interface Product {
   type: string;
   is_new_arrival: boolean;
   color: string;
+  stock: number;
+  product_description?: string;
 }
 
 export interface CartItem {

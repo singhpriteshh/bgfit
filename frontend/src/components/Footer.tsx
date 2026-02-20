@@ -3,15 +3,20 @@ import { useState } from "react";
 import {
   Facebook,
   Instagram,
-  Twitter,
+  // Twitter,
   Mail,
   MapPin,
   Phone,
   X,
 } from "lucide-react";
+import { toast } from "react-toastify";
 
 const Footer = () => {
   const [showSizeChart, setShowSizeChart] = useState(false);
+
+  const handleClick = () => {
+    toast.success("Thank you for subscribing!");
+  };
 
   return (
     <footer className="bg-secondary text-white pt-16 pb-8 font-sans">
@@ -47,7 +52,7 @@ const Footer = () => {
                   placeholder="Enter your email"
                   className="bg-white/10 border-none text-white placeholder-gray-500 px-4 py-3 w-full focus:ring-1 focus:ring-primary"
                 />
-                <button className="bg-primary px-6 font-bold uppercase tracking-wider text-sm hover:bg-primary-dark transition-colors">
+                <button onClick={handleClick} className="bg-primary px-6 font-bold uppercase tracking-wider text-sm hover:bg-primary-dark transition-colors">
                   Join
                 </button>
               </div>
@@ -169,19 +174,19 @@ const Footer = () => {
             </ul>
             <div className="flex gap-4 mt-8">
               <a
-                href="#"
+                href="https://www.instagram.com/thebgfit.in" target="_blank"
                 className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary transition-colors text-white"
               >
                 <Instagram className="w-5 h-5" />
               </a>
-              <a
+              {/* <a
                 href="#"
                 className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary transition-colors text-white"
               >
                 <Twitter className="w-5 h-5" />
-              </a>
+              </a> */}
               <a
-                href="#"
+                href="https://www.facebook.com/people/bgfitin/61567212359775/?mibextid=wwXIfr&rdid=vxE7s7oMsrQg1Cgy&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1DPndVZmxR%2F%3Fmibextid%3DwwXIfr" target="_blank"
                 className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary transition-colors text-white"
               >
                 <Facebook className="w-5 h-5" />
@@ -195,7 +200,10 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} BgFitStore. All rights reserved.
           </p>
           <div className="flex gap-6 text-xs text-gray-500 uppercase tracking-widest font-medium">
-            <Link to="/privacy" className="hover:text-white transition-colors">
+            <Link
+              to="/privacy-policy"
+              className="hover:text-white transition-colors"
+            >
               Privacy Policy
             </Link>
             <Link to="/terms" className="hover:text-white transition-colors">

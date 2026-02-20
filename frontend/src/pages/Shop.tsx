@@ -106,7 +106,7 @@ const Shop = () => {
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Page Title & Sort Row */}
       <div className="relative z-20 border-b border-gray-200 pb-4 mb-6 transition-all">
-        <div className="flex flex-col md:flex-row justify-between items-end gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
           <div>
             <div className="text-gray-500 text-xs mb-1">
               Home / {gender ? gender : "Shop"}
@@ -119,26 +119,18 @@ const Shop = () => {
             </h1>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 w-full md:w-auto">
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="w-64 p-2  border border-gray-300 text-sm focus:outline-none focus:border-gray-500 rounded-sm"
+              className="flex-1 md:w-64 p-2 border border-gray-300 text-sm shrink min-w-0 focus:outline-none focus:border-gray-500 rounded-sm"
             >
-              {settings?.sorting_options?.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              )) || (
-                <>
-                  <option value="newest">Sort by: Newest Arrivals</option>
-                  <option value="price_asc">Sort by: Price Low to High</option>
-                  <option value="price_desc">Sort by: Price High to Low</option>
-                </>
-              )}
+              <option value="newest">Sort by: Newest Arrivals</option>
+              <option value="price_asc">Sort by: Price Low to High</option>
+              <option value="price_desc">Sort by: Price High to Low</option>
             </select>
             <button
-              className="md:hidden p-2 border border-gray-300 rounded-sm ml-2 "
+              className="md:hidden px-4 py-2 border border-gray-300 rounded-sm text-sm"
               onClick={() => setIsFilterOpen(!isFilterOpen)}
             >
               Filters

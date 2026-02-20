@@ -13,6 +13,8 @@ interface ProductFormData {
   image_url: string;
   back_image_url: string;
   is_new_arrival: boolean;
+  stock: string;
+  product_description: string;
 }
 
 const initialFormState: ProductFormData = {
@@ -24,6 +26,8 @@ const initialFormState: ProductFormData = {
   image_url: "",
   back_image_url: "",
   is_new_arrival: false,
+  stock: "0",
+  product_description: "",
 };
 
 const ProductManagement = () => {
@@ -53,7 +57,8 @@ const ProductManagement = () => {
     try {
       const payload = {
         ...formData,
-        price: Number(formData.price), // Convert to number
+        price: Number(formData.price),
+        stock: Number(formData.stock),
       };
 
       if (editingId) {
@@ -97,6 +102,8 @@ const ProductManagement = () => {
       image_url: product.image_url,
       back_image_url: product.back_image_url || "",
       is_new_arrival: product.is_new_arrival,
+      stock: product.stock.toString(),
+      product_description: product.product_description || "",
     });
     setIsModalOpen(true);
   };
@@ -177,6 +184,9 @@ const ProductManagement = () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
               </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Stock
+              </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
@@ -217,6 +227,9 @@ const ProductManagement = () => {
                       New Arrival
                     </span>
                   )}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {product.stock}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                   <button
@@ -349,6 +362,38 @@ const ProductManagement = () => {
                     New Arrival
                   </label>
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Stock
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={formData.stock}
+                    onChange={(e) =>
+                      setFormData({ ...formData, stock: e.target.value })
+                    }
+                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2 border"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Product Description
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.product_description}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      product_description: e.target.value,
+                    })
+                  }
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2 border"
+                  placeholder="Enter detailed description here..."
+                />
               </div>
 
               <div>
