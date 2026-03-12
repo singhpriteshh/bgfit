@@ -1,6 +1,13 @@
+import SEO from "../components/SEO";
+
 const PrivacyPolicy = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 font-sans text-gray-800">
+      <SEO
+        title="Privacy Policy – BgFit.in | How We Protect Your Data"
+        description="Read BgFit.in's privacy policy. Learn how we collect, use, and protect your personal information. We use Razorpay for secure payments and follow PCI-DSS standards."
+        keywords="bgfit privacy policy, data protection, personal information, Razorpay payments, secure shopping, cookies policy, bgfit data security"
+      />
       <h1 className="text-3xl md:text-5xl font-display font-bold uppercase tracking-tight mb-8">
         Privacy Policy
       </h1>

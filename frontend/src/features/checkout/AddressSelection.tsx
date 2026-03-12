@@ -129,7 +129,7 @@ export default function AddressSelection() {
           currency: order.currency,
           name: "BgFitStore",
           description: "Purchase",
-          image: "/logo.png",
+          image: "/images/Final_BF_Logo_charcoal_text_-01.png",
           order_id: order.id,
           handler: async function (response: any) {
             try {

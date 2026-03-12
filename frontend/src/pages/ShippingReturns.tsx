@@ -1,9 +1,15 @@
 import { Truck, RotateCcw } from "lucide-react";
 import { Link } from "react-router-dom";
+import SEO from "../components/SEO";
 
 export default function ShippingReturns() {
   return (
     <div className="bg-white min-h-[60vh]">
+      <SEO
+        title="Shipping & Returns – BgFit.in | Free Delivery & Easy Returns"
+        description="Learn about BgFit.in's shipping options, delivery times, and hassle-free 15-day return policy. Free standard shipping on orders above ₹999. Express delivery available."
+        keywords="bgfit shipping, bgfit returns, free shipping India, 15 day return policy, exchange policy, delivery time, bgfit delivery, online shopping returns India"
+      />
       {/* Header */}
       <div className="bg-gray-50 py-16 text-center border-b border-gray-200 px-4">
         <h1 className="text-4xl font-display font-bold text-gray-900 uppercase tracking-wide mb-4">

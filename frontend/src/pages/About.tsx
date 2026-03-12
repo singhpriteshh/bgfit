@@ -6,10 +6,16 @@ import {
   TrendingUp,
   ShieldCheck,
 } from "lucide-react";
+import SEO from "../components/SEO";
 
 const About = () => {
   return (
     <div className="bg-white">
+      <SEO
+        title="About Us – BgFit.in | Our Story & Mission"
+        description="Learn about BgFit.in – an Indian streetwear and fitness brand founded in 2024. We engineer premium gear to help you perform at your best. Bold. Resilient. Unstoppable."
+        keywords="about bgfit, bgfit story, Indian fitness brand, premium gym clothing brand, streetwear brand India, fitness apparel company, athletic wear brand"
+      />
       {/* Hero Section */}
       <div className="relative bg-secondary overflow-hidden py-32">
         <div className="absolute inset-0">

@@ -50,16 +50,27 @@ class UserUpdate(SQLModel):
 
 
 # Product Schema (if needed for API response validation, though DB model works too)
+class SizeStockRead(SQLModel):
+    size: str
+    stock: int
+
+
+class SizeStockCreate(SQLModel):
+    size: str
+    stock: int = 0
+
+
 class ProductRead(SQLModel):
     id: uuid.UUID
     name: str
     price: int
     image_url: str
+    back_image_url: Optional[str] = None
     category: str
     type: str
     is_new_arrival: bool
     color: str
-    stock: int
+    size_stocks: list[SizeStockRead] = []
     product_description: Optional[str] = None
 
 
@@ -122,8 +133,8 @@ class ProductCreate(SQLModel):
     type: str
     is_new_arrival: bool = False
     color: str
-    stock: int = 0
     product_description: Optional[str] = None
+    size_stocks: list[SizeStockCreate] = []
 
 
 class ProductUpdate(SQLModel):
@@ -135,8 +146,8 @@ class ProductUpdate(SQLModel):
     type: Optional[str] = None
     is_new_arrival: Optional[bool] = None
     color: Optional[str] = None
-    stock: Optional[int] = None
     product_description: Optional[str] = None
+    size_stocks: Optional[list[SizeStockCreate]] = None
 
 
 class OrderUpdateStatus(SQLModel):

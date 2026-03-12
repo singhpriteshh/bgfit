@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlmodel import Session, select
 from app.database import get_session
-from app.models import User, Address, Order, OrderItem, CartItem, Product
+from app.models import User, Address, Order, OrderItem, CartItem, Product, ProductSizeStock
 from app.api.routers.auth import get_current_user
 from app.api.routers.deps import get_current_admin_user
 from app.schemas import OrderRead, OrderUpdateStatus
@@ -188,7 +188,19 @@ async def verify_payment_and_create_order(
 
         session.add(new_order)
 
-        # 6. Clear Cart
+        # 6. Decrement size-specific stock
+        for item in order_items:
+            size_stock = session.exec(
+                select(ProductSizeStock).where(
+                    ProductSizeStock.product_id == item.product_id,
+                    ProductSizeStock.size == item.size,
+                )
+            ).first()
+            if size_stock:
+                size_stock.stock = max(0, size_stock.stock - item.quantity)
+                session.add(size_stock)
+
+        # 7. Clear Cart
         for item in cart_items:
             session.delete(item)
 

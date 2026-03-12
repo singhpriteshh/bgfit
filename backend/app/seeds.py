@@ -1,6 +1,8 @@
 from sqlmodel import Session, select
 from app.database import engine
-from app.models import Product
+from app.models import Product, ProductSizeStock
+
+DEFAULT_SIZES = ["XS", "S", "M", "L", "XL"]
 
 
 def seed_products():
@@ -122,8 +124,29 @@ def seed_products():
                 existing.image_url = product.image_url
                 existing.back_image_url = product.back_image_url
                 session.add(existing)
+
+                # Ensure size stocks exist for existing products
+                for size in DEFAULT_SIZES:
+                    size_stmt = select(ProductSizeStock).where(
+                        ProductSizeStock.product_id == existing.id,
+                        ProductSizeStock.size == size,
+                    )
+                    existing_stock = session.exec(size_stmt).first()
+                    if not existing_stock:
+                        session.add(
+                            ProductSizeStock(
+                                product_id=existing.id, size=size, stock=5
+                            )
+                        )
             else:
                 session.add(product)
+                session.flush()  # Get the product ID
+                for size in DEFAULT_SIZES:
+                    session.add(
+                        ProductSizeStock(
+                            product_id=product.id, size=size, stock=5
+                        )
+                    )
         session.commit()
         print("Seeding complete.")
 

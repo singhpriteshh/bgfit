@@ -1,0 +1,13 @@
+# https://www.robotstxt.org/robotstxt.html
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://bgfit.in/sitemap.xml
+
+# Disallow admin and private routes
+Disallow: /admin/
+Disallow: /profile
+Disallow: /cart
+Disallow: /checkout/

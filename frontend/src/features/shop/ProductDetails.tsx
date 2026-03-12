@@ -16,7 +16,7 @@ const ProductDetails = () => {
   } = useAppSelector((state) => state.products);
   const { user } = useAppSelector((state) => state.auth);
 
-  const [selectedSize, setSelectedSize] = useState("M");
+  const [selectedSize, setSelectedSize] = useState<string>("");
   const [showSizeChart, setShowSizeChart] = useState(false);
 
   // Gallery slider state for mobile
@@ -29,12 +29,33 @@ const ProductDetails = () => {
     }
   }, [dispatch, id]);
 
+  // Auto-select first in-stock size when product loads
+  useEffect(() => {
+    if (product?.size_stocks) {
+      const firstInStock = product.size_stocks.find((ss) => ss.stock > 0);
+      if (firstInStock) {
+        setSelectedSize(firstInStock.size);
+      } else if (product.size_stocks.length > 0) {
+        setSelectedSize(product.size_stocks[0].size);
+      }
+    }
+  }, [product]);
+
   const handleAddToCart = () => {
     if (!product) return;
     if (!user) {
       toast.info("Please login to add items to cart");
       return;
     }
+
+    const sizeStock = product.size_stocks.find(
+      (ss) => ss.size === selectedSize,
+    );
+    if (!sizeStock || sizeStock.stock <= 0) {
+      toast.error(`Size ${selectedSize} is out of stock`);
+      return;
+    }
+
     dispatch(
       addToCart({
         product_id: product.id,
@@ -55,6 +76,19 @@ const ProductDetails = () => {
     const index = Math.round(scrollLeft / clientWidth);
     setActiveIndex(index);
   };
+
+  // Helper: check if all sizes are out of stock
+  const isFullyOutOfStock =
+    product?.size_stocks?.every((ss) => ss.stock <= 0) ?? true;
+
+  // Helper: check if selected size is out of stock
+  const isSelectedSizeOutOfStock = (() => {
+    if (!product) return true;
+    const sizeStock = product.size_stocks.find(
+      (ss) => ss.size === selectedSize,
+    );
+    return !sizeStock || sizeStock.stock <= 0;
+  })();
 
   if (isLoading)
     return (
@@ -118,7 +152,7 @@ const ProductDetails = () => {
                     New Drop
                   </span>
                 )}
-                {product.stock === 0 && (
+                {isFullyOutOfStock && (
                   <span className="bg-red-500/90 backdrop-blur text-white text-xs font-bold px-3 py-1 uppercase tracking-widest">
                     Out of Stock
                   </span>
@@ -170,7 +204,8 @@ const ProductDetails = () => {
             <div>
               <div className="flex justify-between items-center mb-3">
                 <h3 className="text-sm font-medium text-gray-900 uppercase tracking-wide">
-                  Size: <span className="text-gray-500">{selectedSize}</span>
+                  Size:{" "}
+                  <span className="text-gray-500">{selectedSize}</span>
                 </h3>
                 <button
                   onClick={() => setShowSizeChart(true)}
@@ -179,20 +214,28 @@ const ProductDetails = () => {
                   <Ruler className="w-3 h-3" /> Size Guide
                 </button>
               </div>
-              <div className="grid grid-cols-5 gap-3">
-                {["XS", "S", "M", "L", "XL"].map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`py-3 text-sm font-medium border transition-all cursor-pointer ${
-                      selectedSize === size
-                        ? "border-primary bg-primary text-white"
-                        : "border-gray-200 text-gray-900 hover:border-gray-400"
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
+              <div className="flex flex-wrap gap-3">
+                {product.size_stocks.map((ss) => {
+                  const isOutOfStock = ss.stock <= 0;
+                  const isSelected = selectedSize === ss.size;
+
+                  return (
+                    <button
+                      key={ss.size}
+                      onClick={() => setSelectedSize(ss.size)}
+                      disabled={isOutOfStock}
+                      className={`py-3 px-5 text-sm font-medium border transition-all ${
+                        isOutOfStock
+                          ? "border-gray-100 text-gray-300 line-through cursor-not-allowed bg-gray-50"
+                          : isSelected
+                            ? "border-primary bg-primary text-white cursor-pointer"
+                            : "border-gray-200 text-gray-900 hover:border-gray-400 cursor-pointer"
+                      }`}
+                    >
+                      {ss.size}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -216,16 +259,16 @@ const ProductDetails = () => {
             <div className="pt-8">
               <button
                 onClick={handleAddToCart}
-                disabled={product.stock === 0}
+                disabled={isSelectedSizeOutOfStock}
                 className={`w-full py-4 px-8 font-display font-bold text-lg uppercase tracking-wider flex items-center justify-center gap-3 group transition-colors ${
-                  product.stock === 0
+                  isSelectedSizeOutOfStock
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : "bg-secondary text-white hover:bg-black cursor-pointer"
                 }`}
               >
                 <ShoppingCart className="h-5 w-5" />
                 <span>
-                  {product.stock === 0 ? "Out of Stock" : "Add to Cart"}
+                  {isSelectedSizeOutOfStock ? "Out of Stock" : "Add to Cart"}
                 </span>
               </button>
               <p className="text-center text-xs text-gray-400 mt-4 uppercase tracking-widest">

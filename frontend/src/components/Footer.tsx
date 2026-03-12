@@ -13,9 +13,11 @@ import { toast } from "react-toastify";
 
 const Footer = () => {
   const [showSizeChart, setShowSizeChart] = useState(false);
+  const [email, setEmail] = useState("");
 
   const handleClick = () => {
     toast.success("Thank you for subscribing!");
+    setEmail("");
   };
 
   return (
@@ -29,10 +31,10 @@ const Footer = () => {
               className="text-3xl font-bold font-display tracking-tighter text-white flex items-center gap-2"
             >
               <img
-                src="/images/logo.png"
+                src="/logo1.svg"
                 alt="BGFIT Logo"
                 loading="lazy"
-                className="h-8 w-auto invert mix-blend-screen"
+                className="h-8 brightness-0 invert mix-blend-screen"
               />
               <div>
                 BGFIT<span className="text-primary">.IN</span>
@@ -50,6 +52,8 @@ const Footer = () => {
                 <input
                   type="email"
                   placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="bg-white/10 border-none text-white placeholder-gray-500 px-4 py-3 w-full focus:ring-1 focus:ring-primary"
                 />
                 <button onClick={handleClick} className="bg-primary px-6 font-bold uppercase tracking-wider text-sm hover:bg-primary-dark transition-colors">

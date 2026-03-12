@@ -1,6 +1,13 @@
+import SEO from "../components/SEO";
+
 const TermsOfService = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 font-sans text-gray-800">
+      <SEO
+        title="Terms of Service – BgFit.in | Terms & Conditions"
+        description="Read BgFit.in's terms of service. By using our site, you agree to these terms regarding purchases, returns, user content, and more."
+        keywords="bgfit terms of service, terms and conditions, user agreement, online store terms, bgfit policies, shopping terms India"
+      />
       <h1 className="text-3xl md:text-5xl font-display font-bold uppercase tracking-tight mb-8">
         Terms of Service
       </h1>

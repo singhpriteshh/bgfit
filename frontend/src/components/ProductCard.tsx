@@ -18,11 +18,19 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation
+
+    // Pick first in-stock size or fallback
+    const inStockSize = product.size_stocks.find((ss) => ss.stock > 0);
+    if (!inStockSize) {
+      toast.error("This product is out of stock");
+      return;
+    }
+
     dispatch(
       addToCart({
         product_id: product.id,
         quantity: 1,
-        size: "M",
+        size: inStockSize.size,
         color: product.color,
       }),
     )

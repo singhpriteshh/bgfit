@@ -1,10 +1,16 @@
 import { Link } from "react-router-dom";
 import ProductList from "../features/shop/ProductList";
 import { ArrowRight } from "lucide-react";
+import SEO from "../components/SEO";
 
 const Home = () => {
   return (
     <div className="flex flex-col">
+      <SEO
+        title="BgFit.in – Fit. Style. Performance. | Premium Streetwear & Fitness Clothing"
+        description="Shop premium fitness and streetwear clothing at BgFit.in. Discover men's, women's & unisex collections designed for everyday style and peak performance. Free shipping on orders above ₹999."
+        keywords="bgfit, bgfit.in, streetwear, fitness clothing, gym wear, premium t-shirts, casual wear, men clothing online, women clothing online, unisex fashion, Indian streetwear brand, activewear, workout clothes, athleisure"
+      />
       {/* Hero Section */}
       <div className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
         {/* Background */}

@@ -8,6 +8,7 @@ import {
   Twitter,
   Facebook,
 } from "lucide-react";
+import SEO from "../components/SEO";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -37,6 +38,11 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO
+        title="Contact Us – BgFit.in | Get In Touch"
+        description="Contact BgFit.in for order inquiries, support, or feedback. Reach us by phone, email, or our contact form. Based in Mahesana, Gujarat, India."
+        keywords="contact bgfit, bgfit support, customer service, bgfit phone number, bgfit email, order inquiry, Mahesana Gujarat, bgfit address"
+      />
       {/* Hero Minimal */}
       <div className="bg-secondary py-16 text-center">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-white uppercase tracking-tighter">

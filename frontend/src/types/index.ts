@@ -12,6 +12,11 @@ export interface User {
   role: string;
 }
 
+export interface SizeStock {
+  size: string;
+  stock: number;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -22,7 +27,7 @@ export interface Product {
   type: string;
   is_new_arrival: boolean;
   color: string;
-  stock: number;
+  size_stocks: SizeStock[];
   product_description?: string;
 }
 

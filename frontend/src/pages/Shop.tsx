@@ -5,6 +5,7 @@ import api from "../api/client";
 import type { Product } from "../types";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { fetchSettings } from "../store/slices/shopSlice";
+import SEO from "../components/SEO";
 
 const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -104,6 +105,11 @@ const Shop = () => {
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <SEO
+        title={`${getTitle()} – BgFit.in | Shop Premium Streetwear & Fitness Clothing`}
+        description="Browse and shop the latest streetwear and fitness clothing at BgFit.in. Filter by category, price, and color. Men's, women's & unisex collections. Free shipping above ₹999."
+        keywords="buy t-shirts online, gym wear India, streetwear shop, fitness clothing online, bgfit shop, men t-shirts, women t-shirts, unisex clothing, affordable gym wear, premium casual wear, activewear India"
+      />
       {/* Page Title & Sort Row */}
       <div className="relative z-20 border-b border-gray-200 pb-4 mb-6 transition-all">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">

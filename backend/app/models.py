@@ -73,8 +73,26 @@ class Product(SQLModel, table=True):
     type: str  # Tee, Hoodie, etc.
     is_new_arrival: bool = False
     color: str
-    stock: int = Field(default=0)
     product_description: Optional[str] = Field(default=None)
+
+    size_stocks: list["ProductSizeStock"] = Relationship(back_populates="product", cascade_delete=True)
+
+
+class ProductSizeStock(SQLModel, table=True):
+    id: Optional[uuid.UUID] = Field(
+        default=None,
+        sa_column=Column(
+            UUID(as_uuid=True),
+            primary_key=True,
+            server_default=text("uuid_generate_v4()"),
+            nullable=False,
+        ),
+    )
+    product_id: uuid.UUID = Field(foreign_key="product.id")
+    size: str  # e.g. "XS", "S", "M", "L", "XL", "XXL", "XXXL"
+    stock: int = Field(default=0)
+
+    product: Optional[Product] = Relationship(back_populates="size_stocks")
 
 
 class CartItem(SQLModel, table=True):

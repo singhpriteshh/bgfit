@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from sqlalchemy.orm import selectinload
 from app.database import get_session
-from app.models import CartItem, Product, User
+from app.models import CartItem, Product, ProductSizeStock, User
 from app.schemas import CartItemCreate, CartItemRead
 from app.core import security
 from app.core.config import settings
@@ -64,10 +64,21 @@ def add_to_cart(
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
 
+    # Check size-specific stock
+    size_stock = session.exec(
+        select(ProductSizeStock).where(
+            ProductSizeStock.product_id == item.product_id,
+            ProductSizeStock.size == item.size,
+        )
+    ).first()
+
+    if not size_stock:
+        raise HTTPException(status_code=400, detail=f"Size '{item.size}' is not available for this product")
+    if size_stock.stock <= 0:
+        raise HTTPException(status_code=400, detail=f"Size '{item.size}' is out of stock")
+
     cart_item = CartItem(**item.model_dump(), user_id=current_user.id)
 
-    # Check if item already exists in cart, update quantity?
-    # For now simplicity: just add new row or user logic.
     session.add(cart_item)
     session.commit()
     session.refresh(cart_item)

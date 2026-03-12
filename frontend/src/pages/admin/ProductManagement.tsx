@@ -2,20 +2,33 @@ import { useEffect, useState } from "react";
 import api from "../../api/client";
 import type { Product } from "../../types";
 import { toast } from "react-toastify";
-import { Edit2, Trash2, Plus, X } from "lucide-react";
+import { Edit2, Trash2, Plus, X, PlusCircle, MinusCircle } from "lucide-react";
+
+interface SizeStockFormEntry {
+  size: string;
+  stock: string;
+}
 
 interface ProductFormData {
   name: string;
-  price: string; // Handle as string for input, convert to number on submit
+  price: string;
   category: string;
   type: string;
   color: string;
   image_url: string;
   back_image_url: string;
   is_new_arrival: boolean;
-  stock: string;
   product_description: string;
+  size_stocks: SizeStockFormEntry[];
 }
+
+const DEFAULT_SIZES: SizeStockFormEntry[] = [
+  { size: "XS", stock: "0" },
+  { size: "S", stock: "0" },
+  { size: "M", stock: "0" },
+  { size: "L", stock: "0" },
+  { size: "XL", stock: "0" },
+];
 
 const initialFormState: ProductFormData = {
   name: "",
@@ -26,8 +39,8 @@ const initialFormState: ProductFormData = {
   image_url: "",
   back_image_url: "",
   is_new_arrival: false,
-  stock: "0",
   product_description: "",
+  size_stocks: [...DEFAULT_SIZES],
 };
 
 const ProductManagement = () => {
@@ -54,11 +67,34 @@ const ProductManagement = () => {
     e.preventDefault();
     setLoading(true);
 
+    // Validate sizes — no empty size names, no duplicates
+    const sizeNames = formData.size_stocks.map((ss) => ss.size.trim());
+    if (sizeNames.some((s) => s === "")) {
+      toast.error("Size name cannot be empty");
+      setLoading(false);
+      return;
+    }
+    if (new Set(sizeNames).size !== sizeNames.length) {
+      toast.error("Duplicate size names are not allowed");
+      setLoading(false);
+      return;
+    }
+
     try {
       const payload = {
-        ...formData,
+        name: formData.name,
         price: Number(formData.price),
-        stock: Number(formData.stock),
+        category: formData.category,
+        type: formData.type,
+        color: formData.color,
+        image_url: formData.image_url,
+        back_image_url: formData.back_image_url,
+        is_new_arrival: formData.is_new_arrival,
+        product_description: formData.product_description,
+        size_stocks: formData.size_stocks.map((ss) => ({
+          size: ss.size.trim(),
+          stock: Number(ss.stock),
+        })),
       };
 
       if (editingId) {
@@ -102,14 +138,20 @@ const ProductManagement = () => {
       image_url: product.image_url,
       back_image_url: product.back_image_url || "",
       is_new_arrival: product.is_new_arrival,
-      stock: product.stock.toString(),
       product_description: product.product_description || "",
+      size_stocks: product.size_stocks.map((ss) => ({
+        size: ss.size,
+        stock: ss.stock.toString(),
+      })),
     });
     setIsModalOpen(true);
   };
 
   const resetForm = () => {
-    setFormData(initialFormState);
+    setFormData({
+      ...initialFormState,
+      size_stocks: [...DEFAULT_SIZES],
+    });
     setEditingId(null);
   };
 
@@ -120,13 +162,13 @@ const ProductManagement = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append("file", file);
+    const fd = new FormData();
+    fd.append("file", file);
 
     const toastId = toast.loading("Uploading image...");
 
     try {
-      const response = await api.post("/upload", formData, {
+      const response = await api.post("/upload", fd, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -150,6 +192,39 @@ const ProductManagement = () => {
         autoClose: 3000,
       });
     }
+  };
+
+  // Size stock management helpers
+  const addSizeRow = () => {
+    setFormData((prev) => ({
+      ...prev,
+      size_stocks: [...prev.size_stocks, { size: "", stock: "0" }],
+    }));
+  };
+
+  const removeSizeRow = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      size_stocks: prev.size_stocks.filter((_, i) => i !== index),
+    }));
+  };
+
+  const updateSizeRow = (
+    index: number,
+    field: "size" | "stock",
+    value: string,
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      size_stocks: prev.size_stocks.map((ss, i) =>
+        i === index ? { ...ss, [field]: value } : ss,
+      ),
+    }));
+  };
+
+  // Helper: compute total stock for a product
+  const getTotalStock = (product: Product) => {
+    return product.size_stocks.reduce((sum, ss) => sum + ss.stock, 0);
   };
 
   return (
@@ -229,7 +304,16 @@ const ProductManagement = () => {
                   )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {product.stock}
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-medium text-gray-900">
+                      {getTotalStock(product)} total
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      {product.size_stocks
+                        .map((ss) => `${ss.size}:${ss.stock}`)
+                        .join(" · ")}
+                    </span>
+                  </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                   <button
@@ -254,7 +338,7 @@ const ProductManagement = () => {
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 overflow-hidden">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 overflow-hidden max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100">
               <h3 className="text-lg font-semibold text-gray-900">
                 {editingId ? "Edit Product" : "Add New Product"}
@@ -362,19 +446,60 @@ const ProductManagement = () => {
                     New Arrival
                   </label>
                 </div>
-                <div>
+              </div>
+
+              {/* Size-Specific Stock Management */}
+              <div className="border border-gray-200 rounded-lg p-4">
+                <div className="flex justify-between items-center mb-3">
                   <label className="block text-sm font-medium text-gray-700">
-                    Stock
+                    Size & Stock
                   </label>
-                  <input
-                    type="number"
-                    required
-                    value={formData.stock}
-                    onChange={(e) =>
-                      setFormData({ ...formData, stock: e.target.value })
-                    }
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2 border"
-                  />
+                  <button
+                    type="button"
+                    onClick={addSizeRow}
+                    className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+                  >
+                    <PlusCircle className="h-4 w-4" />
+                    Add Size
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {formData.size_stocks.map((ss, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder="Size (e.g. XXL)"
+                        value={ss.size}
+                        onChange={(e) =>
+                          updateSizeRow(index, "size", e.target.value)
+                        }
+                        className="flex-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2 border"
+                      />
+                      <input
+                        type="number"
+                        placeholder="Stock"
+                        min="0"
+                        value={ss.stock}
+                        onChange={(e) =>
+                          updateSizeRow(index, "stock", e.target.value)
+                        }
+                        className="w-24 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2 border"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeSizeRow(index)}
+                        className="text-red-500 hover:text-red-700 shrink-0"
+                        title="Remove size"
+                      >
+                        <MinusCircle className="h-5 w-5" />
+                      </button>
+                    </div>
+                  ))}
+                  {formData.size_stocks.length === 0 && (
+                    <p className="text-sm text-gray-400 text-center py-2">
+                      No sizes configured. Click "Add Size" to add one.
+                    </p>
+                  )}
                 </div>
               </div>
 

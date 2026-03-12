@@ -59,12 +59,12 @@ const Navbar = () => {
           <div className="shrink-0 flex items-center gap-2">
             <Link to="/" className="flex items-center gap-2">
               <img
-                src="/images/logo.png"
+                src="/logo1.svg"
                 alt="BGFIT Logo"
-                className={`h-8 w-auto ${
+                className={`h-8 transition-all duration-300 ${
                   scrolled || !isHome
                     ? "mix-blend-multiply"
-                    : "invert mix-blend-screen"
+                    : "brightness-0 invert mix-blend-screen"
                 }`}
               />
               <div

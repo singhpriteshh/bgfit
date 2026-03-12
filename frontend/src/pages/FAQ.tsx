@@ -1,3 +1,5 @@
+import SEO from "../components/SEO";
+
 export default function FAQ() {
   const faqs = [
     {
@@ -24,6 +26,11 @@ export default function FAQ() {
 
   return (
     <div className="bg-white min-h-[60vh] py-16 md:py-24">
+      <SEO
+        title="FAQ – BgFit.in | Frequently Asked Questions"
+        description="Find answers to common questions about BgFit.in orders, shipping, returns, sizing, and more. Get help with your premium streetwear and fitness clothing purchases."
+        keywords="bgfit FAQ, frequently asked questions, shipping policy, return policy, size guide, order tracking, bgfit help, bgfit customer support"
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-center text-gray-900 mb-16 tracking-wide">
           How can we help?
