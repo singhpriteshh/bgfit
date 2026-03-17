@@ -8,9 +8,6 @@ dist
 Dockerfile
 docker-compose*.yml
 
-# Nginx config (only needed in production stage, copied explicitly)
-nginx.conf
-
 # Environment files
 .env
 .env.*
