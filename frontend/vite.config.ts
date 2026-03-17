@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), tailwindcss()],
     server: {
-      allowedHosts: ["bgfit.in"],
+      allowedHosts: true,
       proxy: {
         "/api": {
           target: env.VITE_PROXY_TARGET || "http://localhost:8000",
@@ -20,6 +20,23 @@ export default defineConfig(({ mode }) => {
         },
       },
       host: true, // Needed for docker mapping
+      fs: {
+        // Deny access to sensitive files
+        deny: [
+          ".env",
+          ".env.*",
+          "Dockerfile",
+          "nginx.conf",
+          "*.log",
+        ],
+      },
+    },
+    // Exclude non-source files from being processed
+    assetsInclude: [],
+    build: {
+      rollupOptions: {
+        external: [/Dockerfile/, /nginx\.conf/],
+      },
     },
   };
 });

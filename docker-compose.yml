@@ -16,12 +16,14 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   backend:
     build: ./backend
-    command: sh -c "python wait_for_db.py && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    command: sh -c "python wait_for_db.py && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
     volumes:
       - ./backend:/app
+    restart: unless-stopped
     ports:
       - "8000:8000"
     networks:
@@ -40,18 +42,14 @@ services:
   frontend:
     build:
       context: ./frontend
-      target: development
-    environment:
-      - VITE_PROXY_TARGET=http://backend:8000
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      target: production
     ports:
       - "3000:3000"
     networks:
       - app-network
     depends_on:
       - backend
+    restart: unless-stopped
 
 volumes:
   postgres_data:

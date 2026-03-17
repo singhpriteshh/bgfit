@@ -1,0 +1,28 @@
+# Dependencies (installed inside container)
+node_modules
+
+# Build output
+dist
+
+# Docker files
+Dockerfile
+docker-compose*.yml
+
+# Nginx config (only needed in production stage, copied explicitly)
+nginx.conf
+
+# Environment files
+.env
+.env.*
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+
+# OS
+.DS_Store
+Thumbs.db
