@@ -16,6 +16,10 @@ COPY . .
 # ========================
 FROM base AS builder
 
+# Set build-time env for Vite
+ARG VITE_API_URL=/api
+ENV VITE_API_URL=$VITE_API_URL
+
 # Build the production-ready static files
 RUN npm run build
 
