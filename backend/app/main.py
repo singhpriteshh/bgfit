@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from app.api.routers import (
     address_router,
@@ -23,6 +24,11 @@ origins = [
     "http://13.204.173.53:3000",
     "http://13.204.173.53:8000",
 ]
+
+# Add Render frontend URL if set
+frontend_url = os.getenv("FRONTEND_URL")
+if frontend_url:
+    origins.append(frontend_url)
 
 app.add_middleware(
     CORSMiddleware,
