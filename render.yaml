@@ -36,7 +36,7 @@ services:
         fromService:
           type: web
           name: bgfit-frontend
-          property: host
+          envVarKey: RENDER_EXTERNAL_URL
       - key: PYTHON_VERSION
         value: 3.11.11
 
@@ -60,4 +60,4 @@ services:
         fromService:
           type: web
           name: bgfit-backend
-          property: host
+          envVarKey: RENDER_EXTERNAL_URL
