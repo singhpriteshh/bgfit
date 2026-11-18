@@ -1,8 +1,16 @@
 import axios from "axios";
 
 // Create generic axios instance
+let rawBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+if (rawBaseUrl && !rawBaseUrl.startsWith("http://") && !rawBaseUrl.startsWith("https://") && !rawBaseUrl.startsWith("/")) {
+  rawBaseUrl = `https://${rawBaseUrl}`;
+}
+if (rawBaseUrl && !rawBaseUrl.endsWith("/api") && !rawBaseUrl.endsWith("/api/")) {
+  rawBaseUrl = `${rawBaseUrl.replace(/\/+$/, "")}/api`;
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000/api",
+  baseURL: rawBaseUrl,
   headers: {
     "Content-Type": "application/json",
   },

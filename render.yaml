@@ -32,10 +32,13 @@ services:
         sync: false
       - key: SECRET_KEY
         generateValue: true
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: bgfit-frontend
+          property: host
       - key: PYTHON_VERSION
         value: 3.11.11
-      - key: FRONTEND_URL
-        sync: false
 
   # ── Frontend (React Static Site) ──
   - type: web
@@ -56,4 +59,7 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        sync: false
+        fromService:
+          type: web
+          name: bgfit-backend
+          property: host

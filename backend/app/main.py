@@ -29,6 +29,9 @@ origins = [
 frontend_url = os.getenv("FRONTEND_URL")
 if frontend_url:
     origins.append(frontend_url)
+    if not frontend_url.startswith("http://") and not frontend_url.startswith("https://"):
+        origins.append(f"https://{frontend_url}")
+        origins.append(f"http://{frontend_url}")
 
 app.add_middleware(
     CORSMiddleware,
